@@ -1,34 +1,39 @@
 ---
 name: lora-dataset-forge
 description: >
-  A skill for preparing LoRA editing model datasets.
-  It merges START-END paired datasets, prevents filename collisions,
-  preserves training platform naming conventions, and generates reports.
+  A dataset engineering skill for LoRA editing models.
+  It merges, validates and organizes START-END paired training datasets.
 ---
 
 # LoRA Dataset Forge
 
-## Purpose
-Prepare LoRA editing datasets from multiple training packages.
+## When to use this skill
 
-## Supported format
+Use this skill when users need:
 
-Input:
-- 0001_start.png
-- 0001_end.png
-- 0001.txt
+- Merge multiple LoRA editing datasets
+- Fix duplicate training filenames
+- Validate START-END image pairs
+- Prepare datasets for LoRA training
+
+## Supported dataset format
+
+Example:
+
+0001_start.png
+0001_end.png
+0001.txt
 
 Output:
-- 010001_start.png
-- 010001_end.png
-- 010001.txt
 
-The first two digits represent the source dataset id.
+010001_start.png
+010001_end.png
+010001.txt
 
 ## Workflow
 
 1. Inspect dataset structure.
-2. Check start/end/txt matching.
-3. Merge datasets.
-4. Rename safely.
-5. Generate merge report.
+2. Validate image pairs.
+3. Assign dataset IDs.
+4. Merge datasets safely.
+5. Generate reports.

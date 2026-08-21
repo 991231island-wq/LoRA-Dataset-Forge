@@ -1,7 +1,6 @@
+from pathlib import Path
 import os
 import shutil
-from pathlib import Path
-from datetime import datetime
 
 
 def merge_datasets(input_folders, output_folder):
@@ -11,42 +10,40 @@ def merge_datasets(input_folders, output_folder):
     logs = []
 
     for dataset_id, folder in enumerate(input_folders, start=1):
+        dataset_prefix = str(dataset_id).zfill(2)
+
         for root, _, files in os.walk(folder):
             for filename in files:
                 src = Path(root) / filename
 
-                if src.suffix.lower() not in [".png", ".jpg", ".jpeg", ".webp", ".txt"]:
+                if src.suffix.lower() not in [
+                    ".png", ".jpg", ".jpeg", ".webp", ".txt"
+                ]:
                     continue
 
                 stem = src.stem
                 ext = src.suffix
-
                 parts = stem.split("_")
 
                 if len(parts) >= 2 and parts[0].isdigit():
-                    new_stem = (
-                        str(dataset_id).zfill(2)
-                        + parts[0].zfill(4)
-                        + "_"
-                        + "_".join(parts[1:])
+                    new_name = (
+                        dataset_prefix +
+                        parts[0].zfill(4) +
+                        "_" +
+                        "_".join(parts[1:]) +
+                        ext
                     )
                 else:
-                    new_stem = str(dataset_id).zfill(2) + stem
+                    new_name = dataset_prefix + stem + ext
 
-                target = output / (new_stem + ext)
+                target = output / new_name
 
-                counter = 1
+                count = 1
                 while target.exists():
-                    target = output / f"{new_stem}_{counter}{ext}"
-                    counter += 1
+                    target = output / f"{target.stem}_{count}{ext}"
+                    count += 1
 
                 shutil.copy2(src, target)
                 logs.append(f"{src.name} -> {target.name}")
-
-    with open(output / "merge_log.txt", "w", encoding="utf-8") as f:
-        f.write("LoRA Dataset Forge Report\n")
-        f.write(str(datetime.now()))
-        f.write("\n\n")
-        f.write("\n".join(logs))
 
     return logs
